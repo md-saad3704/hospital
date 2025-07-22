@@ -31,7 +31,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#D8D2FC] via-[#FDE2E0] to-[#E0E9F4] font-sans text-gray-800">
       {/* Navbar */}
-      <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur-md relative">
+      <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur-md">
         {/* Animated MediCare+ link with smooth scroll to top */}
         <motion.a
           href="/"
