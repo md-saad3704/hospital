@@ -6,7 +6,6 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import "./index.css"; 
 
-// import Register from "./pages/Register";
 
 export default function App() {
   const location = useLocation();
@@ -16,7 +15,6 @@ export default function App() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
-        {/* <Route path="/register" element={<Register />} /> */}
       </Routes>
     </AnimatePresence>
   );
