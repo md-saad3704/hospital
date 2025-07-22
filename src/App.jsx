@@ -1,11 +1,9 @@
-// src/App.jsx
 import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import "./index.css"; 
-
 
 export default function App() {
   const location = useLocation();
