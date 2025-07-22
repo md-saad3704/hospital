@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const transitionVariants = {
   hidden: { opacity: 0, x: 50 },
@@ -23,6 +24,7 @@ export default function Auth() {
     name: "",
     email: "",
     password: "",
+    dob: "", // Added date of birth
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -41,6 +43,10 @@ export default function Auth() {
       error = "Password must be at least 6 characters";
     if (name === "name" && !isLogin && value.trim() === "")
       error = "Please enter your full name";
+    // Date of birth validation
+    if (name === "dob" && !isLogin && value.trim() === "")
+      error = "Please enter your date of birth";
+
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
@@ -51,13 +57,17 @@ export default function Auth() {
       newErrors.password = "Password must be at least 6 characters";
     if (!isLogin && formData.name.trim() === "")
       newErrors.name = "Please enter your full name";
+    // Date of birth validation for registration
+    if (!isLogin && formData.dob.trim() === "")
+      newErrors.dob = "Please enter your date of birth";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleModeSwitch = (login) => {
     setIsLogin(login);
-    setFormData({ name: "", email: "", password: "" });
+    setFormData({ name: "", email: "", password: "", dob: "" }); // Reset dob
     setErrors({});
     setTouched({});
     setShowPassword(false);
@@ -70,7 +80,7 @@ export default function Auth() {
     setTimeout(() => {
       setLoading(false);
       alert(`${isLogin ? "Logged in" : "Registered"} successfully!`);
-      setFormData((prev) => ({ ...prev, password: "" }));
+      setFormData((prev) => ({ ...prev, password: "" })); // Keep other fields for demo purposes, clear password
     }, 1500);
   };
 
@@ -105,7 +115,7 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#D8D2FC] via-[#FDE2E0] to-[#E0E9F4] px-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md border border-gray-100 transition-all duration-300">
+      <div className="bg-white/30 rounded-2xl shadow-lg p-6 w-full max-w-md border border-gray-100 transition-all duration-300">
         {/* Title */}
         <h2 className="text-2xl md:text-3xl font-bold text-center text-indigo-700 mb-6">
           {isLogin ? "Welcome Back" : "Create Your Account"}
@@ -120,7 +130,7 @@ export default function Auth() {
             animate="visible"
             exit="exit"
             onSubmit={handleSubmit}
-            className="space-y-5"
+            className="space-y-4"
             noValidate
             aria-label={isLogin ? "Login Form" : "Registration Form"}
           >
@@ -137,7 +147,7 @@ export default function Auth() {
                   type="text"
                   name="name"
                   id="name"
-                  placeholder="John Doe"
+                  placeholder="Your Full Name"
                   value={formData.name}
                   onChange={handleChange}
                   required
@@ -174,7 +184,7 @@ export default function Auth() {
                 type="email"
                 name="email"
                 id="email"
-                placeholder="you@example.com"
+                placeholder="Enter your Email"
                 autoComplete="username"
                 value={formData.email}
                 onChange={handleChange}
@@ -198,6 +208,43 @@ export default function Auth() {
                 </span>
               )}
             </div>
+
+            {/* Date of Birth (only for register) */}
+            {!isLogin && (
+              <div>
+                <label
+                  htmlFor="dob"
+                  className="block mb-1 text-sm font-medium text-gray-700"
+                >
+                  Date of Birth
+                </label>
+                <input
+                  type="date"
+                  name="dob"
+                  id="dob"
+                  value={formData.dob}
+                  onChange={handleChange}
+                  required
+                  aria-required="true"
+                  aria-invalid={!!errors.dob}
+                  aria-describedby="dob-error"
+                  className={`w-full px-4 py-3 border ${
+                    errors.dob && touched.dob
+                      ? "border-red-400"
+                      : "border-gray-300"
+                  } rounded-lg focus:outline-none focus:ring-2 ${
+                    errors.dob && touched.dob
+                      ? "focus:ring-red-400"
+                      : "focus:ring-indigo-400"
+                  } transition`}
+                />
+                {errors.dob && touched.dob && (
+                  <span id="dob-error" className="text-xs text-red-500 pl-1">
+                    {errors.dob}
+                  </span>
+                )}
+              </div>
+            )}
 
             {/* Password with Show/Hide */}
             <div>
@@ -238,46 +285,17 @@ export default function Auth() {
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    // Eye-off icon (use heroicons or your own SVG)
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.656.41-3.219 1.125-4.575M15 12a3 3 0 01-3 3m6.364-9.364A10.072 10.072 0 0112 3c-2.36 0-4.532.814-6.364 2.364"
-                      />
-                    </svg>
+                    <EyeSlashIcon className="h-5 w-5" />
                   ) : (
-                    // Eye icon
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
+                    <EyeIcon className="h-5 w-5" />
                   )}
                 </button>
               </div>
               {errors.password && touched.password && (
-                <span id="password-error" className="text-xs text-red-500 pl-1">
+                <span
+                  id="password-error"
+                  className="text-xs text-red-500 pl-1"
+                >
                   {errors.password}
                 </span>
               )}
@@ -308,24 +326,50 @@ export default function Auth() {
                 onClick={() => handleSocial("Google")}
                 aria-label="Sign in with Google"
               >
-                <svg className="h-5 w-5" viewBox="0 0 533.5 544.3">
-                  <g>
-                    <path fill="#4285f4" d="M533.5 278.4..." />
-                    {/* use a public SVG icon or an icon library here */}
-                  </g>
+                <svg
+                  className="h-5 w-5"
+                  viewBox="0 0 533.5 544.3"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M533.5 278.4c0-17.4-1.6-34.1-4.6-50.4H272v95.3h147.2c-6.3 33.9-25.1 62.6-53.5 81.8v67.7h86.5c50.6-46.6 81.3-115.3 81.3-194.4z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M272 544.3c72.9 0 134.1-24.2 178.8-65.8l-86.5-67.7c-24.1 16.2-54.8 25.6-92.3 25.6-70.9 0-131-47.9-152.5-112.1H29.7v70.3C74.8 486.2 167.7 544.3 272 544.3z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M119.5 324.3c-10.4-30.3-10.4-62.8 0-93.1V160.9H29.7c-32.4 63.7-32.4 139.7 0 203.4l89.8-70z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M272 107.7c39.6-.6 77.7 14.1 106.4 41.2l79.4-79.4C416.1 24.2 354.9 0 272 0 167.7 0 74.8 58.1 29.7 160.9l89.8 70c21.5-64.2 81.6-112.1 152.5-112.1z"
+                    fill="#EA4335"
+                  />
                 </svg>
                 <span>Continue with Google</span>
               </button>
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 w-full py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
-                onClick={() => handleSocial("GitHub")}
-                aria-label="Sign in with GitHub"
+                className="flex items-center justify-center gap-2 w-full py-2 border border-gray-200 rounded-lg hover:bg-gray-50  transition"
+                onClick={() => handleSocial("Phone")}
+                aria-label="Sign in with Phone Number"
               >
-                <svg className="h-5 w-5" viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M12 0.3C5.4..." />
+                <svg
+                  className="h-5 w-5 text-indigo-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 5a2 2 0 012-2h3.6a1 1 0 01.94.658l1.518 4.555a1 1 0 01-.217 1.015l-2.017 2.017a11.042 11.042 0 005.292 5.292l2.017-2.017a1 1 0 011.015-.217l4.555 1.518A1 1 0 0121 17.4V21a2 2 0 01-2 2h-.2C9.39 23 1 14.61 1 4.2V4a1 1 0 011-1h1z"
+                  />
                 </svg>
-                <span>Continue with Microsoft</span>
+                <span>Continue with Phone Number</span>
               </button>
             </div>
 
