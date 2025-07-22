@@ -24,7 +24,7 @@ export default function Auth() {
     name: "",
     email: "",
     password: "",
-    dob: "", // Added date of birth
+    dob: "", 
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
