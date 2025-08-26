@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 
 const transitionVariants = {
   hidden: { opacity: 0, x: 50 },
@@ -30,6 +31,7 @@ export default function Auth() {
   const [touched, setTouched] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   // Handle form state changes and validation
   const handleChange = (e) => {
@@ -79,8 +81,9 @@ export default function Auth() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      alert(`${isLogin ? "Logged in" : "Registered"} successfully!`);
+      // alert(`${isLogin ? "Logged in" : "Registered"} successfully!`);
       setFormData((prev) => ({ ...prev, password: "" })); // Keep other fields for demo purposes, clear password
+       navigate("/home");
     }, 1500);
   };
 
