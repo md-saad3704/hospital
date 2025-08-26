@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import PropTypes from "prop-types"; // ✅ Prop validation
-import './DepartmentSelection.css';
+// import './DepartmentSelection.css';
 
 function DepartmentSelection({ departments = [], onSelect }) {
   const [searchTerm, setSearchTerm] = useState("");
