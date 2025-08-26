@@ -1,28 +1,91 @@
 // src/pages/Home.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import landingImage from "../images/landing.png";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const navigate = useNavigate();
 
+  // Function to smooth scroll to the top of the page
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  // Function to smooth scroll to a specific section by its ID
+  const scrollToSection = (id) => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start", // Scrolls to the top of the element
+      });
+      setMenuOpen(false); // Close mobile menu after clicking a link
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#D8D2FC] via-[#FDE2E0] to-[#E0E9F4] font-sans text-gray-800">
       {/* Navbar */}
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur-md relative">
-        <h1 className="text-2xl font-bold text-blue-600">MediCare+</h1>
+      <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur-md">
+        {/* Animated MediCare+ link with smooth scroll to top */}
+        <motion.a
+          href="/"
+          className="text-2xl font-bold text-blue-600 relative group overflow-hidden"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToTop();
+          }}
+        >
+          MediCare+
+          {/* Animated underline for MediCare+ */}
+          <span className="absolute left-0 bottom-0 h-0.5 bg-blue-500 w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+        </motion.a>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-6 items-center">
-          <a href="#features" className="hover:text-blue-500">
+          {/* Features Link */}
+          <a
+            href="#features"
+            className="relative group hover:text-blue-500"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("features");
+            }}
+          >
             Features
+            <span className="absolute left-0 bottom-0 h-0.5 bg-blue-500 w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
           </a>
-          <a href="#how-it-works" className="hover:text-blue-500">
+          {/* How It Works Link */}
+          <a
+            href="#how-it-works"
+            className="relative group hover:text-blue-500"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("how-it-works");
+            }}
+          >
             How It Works
+            <span className="absolute left-0 bottom-0 h-0.5 bg-blue-500 w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
           </a>
-          <a href="#benefits" className="hover:text-blue-500">
+          {/* Benefits Link */}
+          <a
+            href="#benefits"
+            className="relative group hover:text-blue-500"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("benefits");
+            }}
+          >
             Benefits
+            <span className="absolute left-0 bottom-0 h-0.5 bg-blue-500 w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
           </a>
           <a href="/doctors" className="hover:text-blue-500">
             Find a Doctor
@@ -71,24 +134,36 @@ export default function Home() {
         {/* Mobile Menu */}
         {menuOpen && (
           <div className="absolute top-full left-0 w-full bg-white/90 backdrop-blur-md shadow-md flex flex-col space-y-4 p-4 z-10 md:hidden">
+            {/* Mobile Features Link */}
             <a
               href="#features"
               className="hover:text-blue-500"
-              onClick={() => setMenuOpen(false)}
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection("features");
+              }}
             >
               Features
             </a>
+            {/* Mobile How It Works Link */}
             <a
               href="#how-it-works"
               className="hover:text-blue-500"
-              onClick={() => setMenuOpen(false)}
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection("how-it-works");
+              }}
             >
               How It Works
             </a>
+            {/* Mobile Benefits Link */}
             <a
               href="#benefits"
               className="hover:text-blue-500"
-              onClick={() => setMenuOpen(false)}
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection("benefits");
+              }}
             >
               Benefits
             </a>
@@ -106,7 +181,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="flex flex-col md:flex-row items-center px-8 py-20 max-w-6xl mx-auto">
+      <section className="flex flex-row flex-wrap items-center px-4 md:px-8 py-12 md:py-20 max-w-6xl mx-auto gap-8 justify-center">
         <div className="md:w-1/2 space-y-6">
           <h2 className="text-4xl font-bold leading-tight text-blue-800">
             Smarter Hospital Management Starts Here
@@ -123,11 +198,14 @@ export default function Home() {
           </button>
         </div>
         <div className="md:w-1/2 mt-10 md:mt-0">
-          <img src={landingImage} alt="Hospital dashboard" />
+          <img
+            src={landingImage}
+            alt="Hospital dashboard"
+          />
         </div>
       </section>
 
-      {/* Key Features */}
+      {/* Key Features Section - ensure it has the id="features" */}
       <section id="features" className="px-8 py-16">
         <h3 className="text-3xl font-bold text-center mb-12 text-blue-800">
           Key Features
@@ -160,7 +238,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* How It Works Section - ensure it has the id="how-it-works" */}
       <section id="how-it-works" className="px-8 py-16">
         <h3 className="text-3xl font-bold text-center mb-12 text-blue-800">
           How It Works
@@ -193,7 +271,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Benefits */}
+      {/* Benefits Section - ensure it has the id="benefits" */}
       <section id="benefits" className="px-8 py-16">
         <h3 className="text-3xl font-bold text-center mb-12 text-blue-800">
           Why Choose MediCare+
