@@ -24,6 +24,10 @@ export default function Home() {
           <a href="#benefits" className="hover:text-blue-500">
             Benefits
           </a>
+          <a href="/doctors" className="hover:text-blue-500">
+            Find a Doctor
+          </a>
+          <a href="/profile" className="hover:text-blue-500"></a>
           <button
             onClick={() => navigate("/auth")}
             className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition"
@@ -119,10 +123,7 @@ export default function Home() {
           </button>
         </div>
         <div className="md:w-1/2 mt-10 md:mt-0">
-          <img
-            src={landingImage}
-            alt="Hospital dashboard"
-          />
+          <img src={landingImage} alt="Hospital dashboard" />
         </div>
       </section>
 
