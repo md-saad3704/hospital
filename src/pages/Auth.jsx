@@ -92,7 +92,8 @@ export default function Auth() {
       setFormData((prev) => ({ ...prev, password: "" }));
 
       // You can combine names if needed
-      const fullName = `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim();
+      const fullName =
+        `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim();
       console.log("Register/Login Data:", { ...formData, fullName });
 
       navigate("/home");
@@ -153,7 +154,7 @@ export default function Auth() {
                     htmlFor="firstName"
                     className="block mb-1 text-sm font-medium text-gray-700"
                   >
-                    First Name *
+                    First Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -226,7 +227,7 @@ export default function Auth() {
                 htmlFor="email"
                 className="block mb-1 text-sm font-medium text-gray-700"
               >
-                Email Address
+                Email Address <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -263,7 +264,7 @@ export default function Auth() {
                   htmlFor="dob"
                   className="block mb-1 text-sm font-medium text-gray-700"
                 >
-                  Date of Birth
+                  Date of Birth <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -293,12 +294,13 @@ export default function Auth() {
             )}
 
             {/* Password */}
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
                 className="block mb-1 text-sm font-medium text-gray-700"
               >
-                Password
+                Password <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
@@ -322,6 +324,7 @@ export default function Auth() {
                       : "focus:ring-indigo-400"
                   } transition pr-12`}
                 />
+
                 <button
                   type="button"
                   tabIndex={0}
@@ -336,11 +339,20 @@ export default function Auth() {
                   )}
                 </button>
               </div>
+
+              {/* Show Mandatory Note only for Register */}
+              {!isLogin && (
+                <div className="text-sm font-sans text-red-500 mt-1">
+                  <span className="font-extrabold">*</span> is Mandatory
+                </div>
+              )}
+
               {errors.password && touched.password && (
                 <span className="text-xs text-red-500 pl-1">
                   {errors.password}
                 </span>
               )}
+
               {isLogin && (
                 <div className="mt-2 text-right text-sm">
                   <button
@@ -436,7 +448,6 @@ export default function Auth() {
             </motion.button>
           </motion.form>
         </AnimatePresence>
-
         {/* Toggle Auth Mode */}
         <div className="mt-6 text-center text-sm text-gray-600">
           {isLogin ? (
