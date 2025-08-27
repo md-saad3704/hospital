@@ -22,10 +22,12 @@ const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
     email: "",
     password: "",
-    dob: "", // Added date of birth
+    dob: "",
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -33,7 +35,7 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  // Handle form state changes and validation
+  // Handle input changes & validation
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -43,23 +45,22 @@ export default function Auth() {
     if (name === "email" && !validateEmail(value)) error = "Invalid email";
     if (name === "password" && value.length < 6)
       error = "Password must be at least 6 characters";
-    if (name === "name" && !isLogin && value.trim() === "")
-      error = "Please enter your full name";
-    // Date of birth validation
+    if (name === "firstName" && !isLogin && value.trim() === "")
+      error = "First name is required";
     if (name === "dob" && !isLogin && value.trim() === "")
       error = "Please enter your date of birth";
 
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
+  // Validate full form
   const validateForm = () => {
     const newErrors = {};
     if (!validateEmail(formData.email)) newErrors.email = "Invalid email";
     if (formData.password.length < 6)
       newErrors.password = "Password must be at least 6 characters";
-    if (!isLogin && formData.name.trim() === "")
-      newErrors.name = "Please enter your full name";
-    // Date of birth validation for registration
+    if (!isLogin && formData.firstName.trim() === "")
+      newErrors.firstName = "First name is required";
     if (!isLogin && formData.dob.trim() === "")
       newErrors.dob = "Please enter your date of birth";
 
@@ -69,7 +70,14 @@ export default function Auth() {
 
   const handleModeSwitch = (login) => {
     setIsLogin(login);
-    setFormData({ name: "", email: "", password: "", dob: "" }); // Reset dob
+    setFormData({
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      dob: "",
+    });
     setErrors({});
     setTouched({});
     setShowPassword(false);
@@ -81,13 +89,17 @@ export default function Auth() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      // alert(`${isLogin ? "Logged in" : "Registered"} successfully!`);
-      setFormData((prev) => ({ ...prev, password: "" })); // Keep other fields for demo purposes, clear password
-       navigate("/home");
+      setFormData((prev) => ({ ...prev, password: "" }));
+
+      // You can combine names if needed
+      const fullName = `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim();
+      console.log("Register/Login Data:", { ...formData, fullName });
+
+      navigate("/home");
     }, 1500);
   };
 
-  // Simple SVG Spinner
+  // Simple spinner
   const Loader = () => (
     <svg
       className="animate-spin h-5 w-5 text-white"
@@ -111,7 +123,6 @@ export default function Auth() {
     </svg>
   );
 
-  // Social sign-in stub handlers
   const handleSocial = (provider) => {
     alert(`Social sign in with ${provider} not implemented in this demo.`);
   };
@@ -119,12 +130,10 @@ export default function Auth() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#D8D2FC] via-[#FDE2E0] to-[#E0E9F4] px-4">
       <div className="bg-white/30 rounded-2xl shadow-lg p-6 w-full max-w-md border border-gray-100 transition-all duration-300">
-        {/* Title */}
         <h2 className="text-2xl md:text-3xl font-bold text-center text-indigo-700 mb-6">
           {isLogin ? "Welcome Back" : "Create Your Account"}
         </h2>
 
-        {/* Main Form */}
         <AnimatePresence mode="wait">
           <motion.form
             key={isLogin ? "login-form" : "register-form"}
@@ -135,43 +144,79 @@ export default function Auth() {
             onSubmit={handleSubmit}
             className="space-y-4"
             noValidate
-            aria-label={isLogin ? "Login Form" : "Registration Form"}
           >
-            {/* Name (only for register) */}
+            {/* First, Middle, Last Name (Register only) */}
             {!isLogin && (
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block mb-1 text-sm font-medium text-gray-700"
-                >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Your Full Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  aria-required="true"
-                  aria-invalid={!!errors.name}
-                  aria-describedby="name-error"
-                  className={`w-full px-4 py-3 border ${
-                    errors.name && touched.name
-                      ? "border-red-400"
-                      : "border-gray-300"
-                  } rounded-lg focus:outline-none focus:ring-2 ${
-                    errors.name && touched.name
-                      ? "focus:ring-red-400"
-                      : "focus:ring-indigo-400"
-                  } transition`}
-                />
-                {errors.name && touched.name && (
-                  <span id="name-error" className="text-xs text-red-500 pl-1">
-                    {errors.name}
-                  </span>
-                )}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label
+                    htmlFor="firstName"
+                    className="block mb-1 text-sm font-medium text-gray-700"
+                  >
+                    First Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    placeholder="First Name"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                    aria-required="true"
+                    aria-invalid={!!errors.firstName}
+                    className={`w-full px-3 py-2 border ${
+                      errors.firstName && touched.firstName
+                        ? "border-red-400"
+                        : "border-gray-300"
+                    } rounded-lg focus:outline-none focus:ring-2 ${
+                      errors.firstName && touched.firstName
+                        ? "focus:ring-red-400"
+                        : "focus:ring-indigo-400"
+                    }`}
+                  />
+                  {errors.firstName && touched.firstName && (
+                    <span className="text-xs text-red-500 pl-1">
+                      {errors.firstName}
+                    </span>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="middleName"
+                    className="block mb-1 text-sm font-medium text-gray-700"
+                  >
+                    Middle Name
+                  </label>
+                  <input
+                    type="text"
+                    name="middleName"
+                    id="middleName"
+                    placeholder="Middle Name"
+                    value={formData.middleName}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="lastName"
+                    className="block mb-1 text-sm font-medium text-gray-700"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    placeholder="Last Name"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  />
+                </div>
               </div>
             )}
 
@@ -194,7 +239,6 @@ export default function Auth() {
                 required
                 aria-required="true"
                 aria-invalid={!!errors.email}
-                aria-describedby="email-error"
                 className={`w-full px-4 py-3 border ${
                   errors.email && touched.email
                     ? "border-red-400"
@@ -206,13 +250,13 @@ export default function Auth() {
                 } transition`}
               />
               {errors.email && touched.email && (
-                <span id="email-error" className="text-xs text-red-500 pl-1">
+                <span className="text-xs text-red-500 pl-1">
                   {errors.email}
                 </span>
               )}
             </div>
 
-            {/* Date of Birth (only for register) */}
+            {/* Date of Birth (Register only) */}
             {!isLogin && (
               <div>
                 <label
@@ -230,7 +274,6 @@ export default function Auth() {
                   required
                   aria-required="true"
                   aria-invalid={!!errors.dob}
-                  aria-describedby="dob-error"
                   className={`w-full px-4 py-3 border ${
                     errors.dob && touched.dob
                       ? "border-red-400"
@@ -242,14 +285,14 @@ export default function Auth() {
                   } transition`}
                 />
                 {errors.dob && touched.dob && (
-                  <span id="dob-error" className="text-xs text-red-500 pl-1">
+                  <span className="text-xs text-red-500 pl-1">
                     {errors.dob}
                   </span>
                 )}
               </div>
             )}
 
-            {/* Password with Show/Hide */}
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
@@ -269,7 +312,6 @@ export default function Auth() {
                   required
                   aria-required="true"
                   aria-invalid={!!errors.password}
-                  aria-describedby="password-error"
                   className={`w-full px-4 py-3 border ${
                     errors.password && touched.password
                       ? "border-red-400"
@@ -295,10 +337,7 @@ export default function Auth() {
                 </button>
               </div>
               {errors.password && touched.password && (
-                <span
-                  id="password-error"
-                  className="text-xs text-red-500 pl-1"
-                >
+                <span className="text-xs text-red-500 pl-1">
                   {errors.password}
                 </span>
               )}
@@ -315,19 +354,19 @@ export default function Auth() {
               )}
             </div>
 
+            {/* Divider */}
             <div className="relative flex items-center mb-6">
               <div className="flex-grow border-t border-gray-200"></div>
               <span className="mx-3 text-gray-400 text-xs uppercase">or</span>
               <div className="flex-grow border-t border-gray-200"></div>
             </div>
 
-            {/* Social Sign In Buttons */}
+            {/* Social Sign In */}
             <div className="flex flex-col gap-3 mb-6">
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 w-full py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
                 onClick={() => handleSocial("Google")}
-                aria-label="Sign in with Google"
               >
                 <svg
                   className="h-5 w-5"
@@ -353,11 +392,11 @@ export default function Auth() {
                 </svg>
                 <span>Continue with Google</span>
               </button>
+
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 w-full py-2 border border-gray-200 rounded-lg hover:bg-gray-50  transition"
+                className="flex items-center justify-center gap-2 w-full py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
                 onClick={() => handleSocial("Phone")}
-                aria-label="Sign in with Phone Number"
               >
                 <svg
                   className="h-5 w-5 text-indigo-600"
@@ -382,7 +421,6 @@ export default function Auth() {
               whileHover={{ scale: !loading ? 1.03 : 1 }}
               whileTap={{ scale: !loading ? 0.98 : 1 }}
               disabled={loading}
-              aria-disabled={loading}
               className={`w-full bg-indigo-600 text-white px-4 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 font-semibold flex items-center justify-center gap-2 ${
                 loading ? "opacity-60 cursor-not-allowed" : ""
               }`}
@@ -403,7 +441,7 @@ export default function Auth() {
         <div className="mt-6 text-center text-sm text-gray-600">
           {isLogin ? (
             <>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <button
                 type="button"
                 onClick={() => handleModeSwitch(false)}
