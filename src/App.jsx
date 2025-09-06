@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import DoctorList from "./pages/DoctorList";
 import DoctorProfile from "./pages/DoctorProfile";
 import HospitalDepartment from "./pages/hospitaldepartment";
+import Department from "./pages/Department";
 
 import "./index.css"; 
 
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/doctorlist" element={<DoctorList />} />
         <Route path="/doctor/:id" element={<DoctorProfile />} />
         <Route path="/hospitaldepartment" element={<HospitalDepartment />} />
+        <Route path="/department" element={<Department />} />
       </Routes>
     
     </AnimatePresence>

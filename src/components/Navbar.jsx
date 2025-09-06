@@ -11,6 +11,7 @@ export default function Navbar() {
     { name: "Profile", path: "/profile" },
     { name: "Find Doctor", path: "/doctorlist" },
     { name: "Hospital Department", path: "/hospitaldepartment" },
+    { name: "Department", path: "/department" },
   ];
 
   return (
